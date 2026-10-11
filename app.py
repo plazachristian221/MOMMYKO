@@ -3,6 +3,7 @@ from flask import Flask, render_template_string
 
 app = Flask(__name__)
 
+
 @app.route("/")
 def home():
     return render_template_string("""
@@ -24,22 +25,24 @@ def home():
             display: flex;
             justify-content: center;
             align-items: center;
-            overflow: hidden;
+            overflow-x: hidden;
+            overflow-y: auto;
             font-family: 'Trebuchet MS', sans-serif;
             background: linear-gradient(135deg, #ffd6e7, #ffb6d1, #fff0f5);
             color: #d63384;
+            padding: 20px 0;
         }
 
         .card {
             width: 90%;
             max-width: 450px;
-            max-height: 90vh;
+            max-height: 95vh;
             overflow-y: auto;
             text-align: center;
             padding: 30px 24px;
             border: 3px solid white;
             border-radius: 30px;
-            background: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.9);
             box-shadow: 0 10px 40px #e7548050;
             position: relative;
             z-index: 2;
@@ -57,6 +60,7 @@ def home():
 
         h2 {
             color: #ff4081;
+            font-size: 22px;
         }
 
         p {
@@ -86,6 +90,29 @@ def home():
             animation: appear 1s ease;
         }
 
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 12px;
+            margin: 20px 0;
+        }
+
+        .gallery img {
+            display: block;
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+            border: 4px solid white;
+            border-radius: 18px;
+            box-shadow: 0 4px 12px #e7548030;
+        }
+
+        .gallery img:last-child:nth-child(odd) {
+            grid-column: 1 / -1;
+            max-width: 75%;
+            justify-self: center;
+        }
+
         .floating-heart {
             position: fixed;
             bottom: -50px;
@@ -110,23 +137,20 @@ def home():
             from { opacity: 0; transform: translateY(15px); }
             to { opacity: 1; transform: translateY(0); }
         }
-        
-        .gallery {
-            display: grid;
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-            gap: 12px;
-            margin: 20px 0;
-        }
 
-        .gallery img {
-            width: 100%;
-            height: 190px;
-            object-fit: cover;
-            border: 4px solid white;
-            border-radius: 18px;
-            box-shadow: 0 4px 12px #e7548030;
-        }
+        @media (max-width: 380px) {
+            .card {
+                padding: 24px 16px;
+            }
 
+            h1 {
+                font-size: 26px;
+            }
+
+            .gallery img {
+                height: 145px;
+            }
+        }
     </style>
 </head>
 
@@ -141,17 +165,19 @@ def home():
             I want you to know how special you are to me. 💕
         </p>
 
-        <h2>I LOVEYOUSOMUCHMOMMYKO😘😘😘😘😘😘😘😘😘😘😘😘😘😘!! ❤️</h2>
+        <h2>
+            I LOVE YOU SO MUCH MOMMYKO 😘❤️
+        </h2>
 
         <h2>Our Little Memories 📸💗</h2>
 
         <p>My favorite moments are the ones with you! 🥹💕</p>
 
         <div class="gallery">
-            <img src="{{ url_for('static', filename='us1.jpg') }}" alt="Our first memory">
-            <img src="{{ url_for('static', filename='us2.jpg') }}" alt="Our second memory">
-            <img src="{{ url_for('static', filename='us3.jpg') }}" alt="Our special memory">
-        </div>
+         <img src="{{ url_for('static', filename='image.png') }}" alt="Our photo 1">
+         <img src="{{ url_for('static', filename='image copy.png') }}" alt="Our photo 2">
+        <img src="{{ url_for('static', filename='image copy 2.png') }}" alt="Our photo 3">
+    </div>
 
         <p>
             You make me smile.<br>
@@ -167,7 +193,7 @@ def home():
             <h2>MWAAAA! 😘💋</h2>
 
             <p>
-                ILOVEYOUMUCMOMMYKO! 💖<br><br>
+                I LOVE YOU SO MUCH MOMMYKO! 💖<br><br>
                 Thank you for being part of my life.<br>
                 Even on difficult days, I want us to keep
                 understanding, supporting, and choosing each other.<br><br>
@@ -215,7 +241,7 @@ def home():
             document.getElementById("extra").textContent =
                 "I LOVE YOU I LOVE YOU I LOVE YOU SOOO MUCHHH!! " +
                 "MWAAAA MWAAAA MWAAAA!! 😘❤️💗💕💖";
-            
+
             for (let i = 0; i < 30; i++) {
                 setTimeout(createHeart, i * 60);
             }
@@ -226,6 +252,7 @@ def home():
 </body>
 </html>
     """)
+
 
 if __name__ == "__main__":
     app.run(debug=True)
