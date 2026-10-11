@@ -1,11 +1,24 @@
+from flask import Flask, render_template_string, url_for
+from pathlib import Path
 
-from flask import Flask, render_template_string
+app = Flask(__name__, static_folder="static")
 
-app = Flask(__name__)
+# Photo filenames inside the static folder
+PHOTO_1 = "image.png"
+PHOTO_2 = "image copy.png"
+PHOTO_3 = "image copy 2.png"
 
 
 @app.route("/")
 def home():
+    photos = [PHOTO_1, PHOTO_2, PHOTO_3]
+
+    # Check that the expected image files exist
+    for photo in photos:
+        image_path = Path(app.static_folder) / photo
+        if not image_path.is_file():
+            app.logger.warning("Photo not found: %s", image_path)
+
     return render_template_string("""
 <!DOCTYPE html>
 <html lang="en">
@@ -25,42 +38,41 @@ def home():
             display: flex;
             justify-content: center;
             align-items: center;
-            overflow-x: hidden;
-            overflow-y: auto;
             font-family: 'Trebuchet MS', sans-serif;
-            background: linear-gradient(135deg, #ffd6e7, #ffb6d1, #fff0f5);
+            background: linear-gradient(
+                135deg, #ffd6e7, #ffb6d1, #fff0f5
+            );
             color: #d63384;
-            padding: 20px 0;
+            padding: 20px 12px;
+            overflow-x: hidden;
         }
 
         .card {
-            width: 90%;
+            width: 100%;
             max-width: 450px;
-            max-height: 95vh;
-            overflow-y: auto;
             text-align: center;
-            padding: 30px 24px;
+            padding: 28px 22px;
             border: 3px solid white;
             border-radius: 30px;
-            background: rgba(255, 255, 255, 0.9);
+            background: rgba(255, 255, 255, 0.94);
             box-shadow: 0 10px 40px #e7548050;
             position: relative;
             z-index: 2;
         }
 
         .big-heart {
-            font-size: 75px;
+            font-size: 65px;
             animation: beat 1s infinite;
         }
 
         h1 {
-            font-size: 30px;
+            font-size: clamp(24px, 6vw, 30px);
             margin: 12px 0;
         }
 
         h2 {
             color: #ff4081;
-            font-size: 22px;
+            font-size: 21px;
         }
 
         p {
@@ -77,40 +89,71 @@ def home():
             font-size: 16px;
             font-weight: bold;
             cursor: pointer;
-            transition: 0.3s;
+            transition: background 0.3s, transform 0.3s;
         }
 
         button:hover {
             background: #e91e63;
-            transform: scale(1.05);
+            transform: scale(1.04);
+        }
+
+        button:focus-visible {
+            outline: 3px solid #d63384;
+            outline-offset: 3px;
         }
 
         #surprise {
             display: none;
-            animation: appear 1s ease;
+            animation: appear 0.8s ease;
         }
 
         .gallery {
             display: grid;
             grid-template-columns: repeat(2, minmax(0, 1fr));
             gap: 12px;
-            margin: 20px 0;
+            margin: 22px 0;
         }
 
-        .gallery img {
-            display: block;
+        .photo-frame {
             width: 100%;
             height: 180px;
-            object-fit: cover;
+            overflow: hidden;
             border: 4px solid white;
             border-radius: 18px;
+            background: #fff0f5;
             box-shadow: 0 4px 12px #e7548030;
         }
 
-        .gallery img:last-child:nth-child(odd) {
+        .photo-frame img {
+            display: block;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .photo-frame:last-child:nth-child(odd) {
             grid-column: 1 / -1;
-            max-width: 75%;
+            width: 75%;
+            height: 180px;
             justify-self: center;
+        }
+
+        .photo-frame img:not([src]) {
+            display: none;
+        }
+
+        .photo-frame img[src=""] {
+            display: none;
+        }
+
+        .photo-error {
+            display: none;
+            height: 100%;
+            padding: 12px;
+            color: #d63384;
+            font-size: 14px;
+            align-items: center;
+            justify-content: center;
         }
 
         .floating-heart {
@@ -123,7 +166,7 @@ def home():
 
         @keyframes beat {
             0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.2); }
+            50% { transform: scale(1.15); }
         }
 
         @keyframes floatUp {
@@ -134,28 +177,42 @@ def home():
         }
 
         @keyframes appear {
-            from { opacity: 0; transform: translateY(15px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(15px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         @media (max-width: 380px) {
             .card {
-                padding: 24px 16px;
+                padding: 22px 14px;
             }
 
-            h1 {
-                font-size: 26px;
-            }
-
-            .gallery img {
+            .photo-frame {
                 height: 145px;
+            }
+
+            .photo-frame:last-child:nth-child(odd) {
+                height: 160px;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                scroll-behavior: auto !important;
             }
         }
     </style>
 </head>
 
 <body>
-    <div class="card">
+    <main class="card">
         <div class="big-heart">💗</div>
 
         <h1>Hi, MOMMYKO! 🥹</h1>
@@ -165,19 +222,27 @@ def home():
             I want you to know how special you are to me. 💕
         </p>
 
-        <h2>
-            I LOVE YOU SO MUCH MOMMYKO 😘❤️
-        </h2>
+        <h2>I LOVE YOU SO MUCH MOMMYKO 😘❤️</h2>
 
         <h2>Our Little Memories 📸💗</h2>
 
         <p>My favorite moments are the ones with you! 🥹💕</p>
 
         <div class="gallery">
-         <img src="{{ url_for('static', filename='image.png') }}" alt="Our photo 1">
-         <img src="{{ url_for('static', filename='image copy.png') }}" alt="Our photo 2">
-        <img src="{{ url_for('static', filename='image copy 2.png') }}" alt="Our photo 3">
-    </div>
+            {% for photo in photos %}
+            <div class="photo-frame">
+                <img
+                    src="{{ url_for('static', filename=photo) }}"
+                    alt="Our special memory"
+                    loading="lazy"
+                    onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+                >
+                <div class="photo-error">
+                    Photo not found: {{ photo }}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
 
         <p>
             You make me smile.<br>
@@ -185,11 +250,11 @@ def home():
             And you make my heart happy. 🫶
         </p>
 
-        <button onclick="openSurprise()">
+        <button type="button" onclick="openSurprise()">
             Open Your Surprise 💌
         </button>
 
-        <div id="surprise">
+        <section id="surprise" hidden>
             <h2>MWAAAA! 😘💋</h2>
 
             <p>
@@ -203,15 +268,17 @@ def home():
 
             <h2>FOREVER YOURS 💗</h2>
 
-            <button onclick="moreLove()">
+            <button type="button" onclick="moreLove()">
                 MORE LOVE!! 💞
             </button>
 
-            <p id="extra"></p>
-        </div>
-    </div>
+            <p id="extra" aria-live="polite"></p>
+        </section>
+    </main>
 
     <script>
+        let heartInterval;
+
         function createHeart() {
             const heart = document.createElement("div");
             heart.className = "floating-heart";
@@ -230,9 +297,11 @@ def home():
         }
 
         function openSurprise() {
-            document.getElementById("surprise").style.display = "block";
+            const surprise = document.getElementById("surprise");
+            surprise.hidden = false;
+            surprise.style.display = "block";
 
-            for (let i = 0; i < 40; i++) {
+            for (let i = 0; i < 30; i++) {
                 setTimeout(createHeart, i * 70);
             }
         }
@@ -242,16 +311,20 @@ def home():
                 "I LOVE YOU I LOVE YOU I LOVE YOU SOOO MUCHHH!! " +
                 "MWAAAA MWAAAA MWAAAA!! 😘❤️💗💕💖";
 
-            for (let i = 0; i < 30; i++) {
+            for (let i = 0; i < 25; i++) {
                 setTimeout(createHeart, i * 60);
             }
         }
 
-        setInterval(createHeart, 600);
+        if (!window.matchMedia(
+            "(prefers-reduced-motion: reduce)"
+        ).matches) {
+            heartInterval = setInterval(createHeart, 1200);
+        }
     </script>
 </body>
 </html>
-    """)
+    """, photos=photos)
 
 
 if __name__ == "__main__":
