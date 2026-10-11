@@ -110,6 +110,23 @@ def home():
             from { opacity: 0; transform: translateY(15px); }
             to { opacity: 1; transform: translateY(0); }
         }
+        
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 12px;
+            margin: 20px 0;
+        }
+
+        .gallery img {
+            width: 100%;
+            height: 190px;
+            object-fit: cover;
+            border: 4px solid white;
+            border-radius: 18px;
+            box-shadow: 0 4px 12px #e7548030;
+        }
+
     </style>
 </head>
 
@@ -125,6 +142,16 @@ def home():
         </p>
 
         <h2>I LOVEYOUSOMUCHMOMMYKO😘😘😘😘😘😘😘😘😘😘😘😘😘😘!! ❤️</h2>
+
+        <h2>Our Little Memories 📸💗</h2>
+
+        <p>My favorite moments are the ones with you! 🥹💕</p>
+
+        <div class="gallery">
+            <img src="{{ url_for('static', filename='us1.jpg') }}" alt="Our first memory">
+            <img src="{{ url_for('static', filename='us2.jpg') }}" alt="Our second memory">
+            <img src="{{ url_for('static', filename='us3.jpg') }}" alt="Our special memory">
+        </div>
 
         <p>
             You make me smile.<br>
