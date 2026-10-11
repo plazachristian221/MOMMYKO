@@ -1,0 +1,164 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>For My Baby ❤️</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            font-family: "Trebuchet MS", sans-serif;
+            background: linear-gradient(135deg, #ffe0ec, #ffc2d8, #fff0f5);
+            color: #c2185b;
+            text-align: center;
+        }
+
+        .card {
+            width: 90%;
+            max-width: 430px;
+            padding: 35px 25px;
+            background: rgba(255, 255, 255, 0.8);
+            border: 2px solid white;
+            border-radius: 30px;
+            box-shadow: 0 15px 40px #e7548033;
+            position: relative;
+            z-index: 2;
+        }
+
+        .heart {
+            font-size: 75px;
+            animation: beat 1s infinite;
+        }
+
+        h1 {
+            font-size: 30px;
+            margin-bottom: 10px;
+        }
+
+        p {
+            line-height: 1.7;
+        }
+
+        button {
+            background: #ff4f87;
+            color: white;
+            border: none;
+            border-radius: 30px;
+            padding: 14px 24px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 15px;
+            transition: 0.3s;
+        }
+
+        button:hover {
+            background: #e91e63;
+            transform: scale(1.05);
+        }
+
+        #surprise {
+            display: none;
+            margin-top: 22px;
+            animation: appear 1s ease;
+        }
+
+        .floating {
+            position: fixed;
+            bottom: -40px;
+            animation: floatUp linear forwards;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        @keyframes beat {
+            50% { transform: scale(1.2); }
+        }
+
+        @keyframes floatUp {
+            to {
+                transform: translateY(-110vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        @keyframes appear {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+
+<body>
+    <main class="card">
+        <div class="heart">💗</div>
+
+        <h1>Hi, MOMMYKO! 🥹</h1>
+
+        <p>
+            I made something special just for you.
+            I hope this reminds you how much
+            you mean to me. 💕
+        </p>
+
+        <h2>I LOVEYOUSOMUCHMOMMYKO😘😘😘😘😘😘😘😘😘😘😘😘😘😘!! ❤️</h2>
+
+        <p>Ikaw ang favorite person ko. Always. 🫶</p>
+
+        <button onclick="showLove()">
+            Click for a surprise 💌
+        </button>
+
+        <div id="surprise">
+            <h2>MWAAAA! 😘💋</h2>
+            <p>
+                ILOVEYOUMUCMOMMYKO 💖<br>
+                Thank you for being you.<br>
+                You make my world brighter.<br>
+                If I had to choose again,<br>
+                I would still choose YOU. 🥹💕
+            </p>
+            <h3>FOREVER YOURS 💗</h3>
+        </div>
+    </main>
+
+    <script>
+        function showLove() {
+            document.getElementById("surprise").style.display = "block";
+
+            for (let i = 0; i < 35; i++) {
+                setTimeout(createHeart, i * 80);
+            }
+        }
+
+        function createHeart() {
+            const heart = document.createElement("div");
+            heart.className = "floating";
+            heart.textContent = ["❤️", "💗", "💕", "💖", "💘"][
+                Math.floor(Math.random() * 5)
+            ];
+
+            heart.style.left = Math.random() * 100 + "vw";
+            heart.style.fontSize = (20 + Math.random() * 25) + "px";
+            heart.style.animationDuration = (3 + Math.random() * 4) + "s";
+
+            document.body.appendChild(heart);
+
+            setTimeout(() => heart.remove(), 7000);
+        }
+
+        setInterval(createHeart, 700);
+    </script>
+</body>
+</html>
